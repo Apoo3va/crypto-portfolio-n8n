@@ -14,7 +14,7 @@
 ---
 ## 📸 Workflow Screenshot
 
-![n8n Workflow](workflow-screenshot.png)
+![n8n Workflow](workflow/workflow-screenshot.png)
 
 ## 🧠 What It Does
 
