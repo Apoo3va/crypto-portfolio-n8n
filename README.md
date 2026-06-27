@@ -14,7 +14,7 @@
 ---
 ## 📸 Workflow Screenshot
 
-![n8n Workflow](workflow/workflow-screenshot.png)
+![n8n Workflow](https://raw.githubusercontent.com/Apoo3va/crypto-portfolio-n8n/main/workflow/workflow-screenshot.png)
 
 ## 🧠 What It Does
 
