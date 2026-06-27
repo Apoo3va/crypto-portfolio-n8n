@@ -209,8 +209,7 @@ crypto-portfolio-n8n/
 
 ---
 
-## 👤 Author
-Apoorva Yadav
+## 👤 Author - Apoorva Yadav
 Built as a portfolio project demonstrating **workflow automation**, **API integration**, **real-time analytics**, and **event-driven notification systems** using n8n.
 
 ---
