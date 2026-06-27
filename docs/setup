@@ -1,0 +1,157 @@
+# 🛠️ Detailed Setup Guide
+
+## Prerequisites
+
+| Requirement | Version | Notes |
+|---|---|---|
+| n8n | v1.0+ | Self-hosted or n8n Cloud |
+| Node.js | v18+ | Required for self-hosted n8n |
+| Telegram | Any | For receiving alerts |
+
+---
+
+## Self-Hosting n8n (Optional)
+
+If you don't have n8n yet:
+
+```bash
+# Using npm
+npm install n8n -g
+n8n start
+
+# Using Docker
+docker run -it --rm \
+  --name n8n \
+  -p 5678:5678 \
+  -v ~/.n8n:/home/node/.n8n \
+  n8nio/n8n
+```
+
+Open `http://localhost:5678` in your browser.
+
+---
+
+## Importing the Workflow
+
+1. Open your n8n instance
+2. Click **"New Workflow"** or open an existing canvas
+3. Click the `...` (three dots) menu in the top right
+4. Select **"Import from JSON"**
+5. Paste the contents of `workflow/crypto_portfolio_workflow.json`
+6. Click **Import**
+
+You should see 8 nodes appear on the canvas.
+
+---
+
+## Telegram Bot Setup
+
+### Create the Bot
+
+1. Open Telegram and search for **@BotFather**
+2. Start a chat and send: `/newbot`
+3. Follow the prompts:
+   - Enter a **display name** (e.g. "My Portfolio Bot")
+   - Enter a **username** ending in `bot` (e.g. `myportfolio_bot`)
+4. BotFather will reply with your **Bot Token** — copy it immediately
+
+> ⚠️ Keep your Bot Token secret. Never share it publicly.
+
+### Add Bot Credentials to n8n
+
+1. Click on either **Telegram Alert** or **Telegram Normal** node
+2. Click the **Credential** dropdown → **Create New**
+3. Paste your Bot Token in the **Access Token** field
+4. Click **Save**
+5. Repeat for the other Telegram node (or select the same credential)
+
+### Get Your Chat ID
+
+1. Open Telegram and search for your bot by its username
+2. Send it any message (e.g. `/start`)
+3. Open this URL in your browser (replace with your token):
+   ```
+   https://api.telegram.org/bot<YOUR_TOKEN>/getUpdates
+   ```
+4. Look for the `"chat"` object in the response:
+   ```json
+   "chat": {
+     "id": 123456789,
+     "first_name": "Your Name",
+     "type": "private"
+   }
+   ```
+5. Copy the `id` number
+
+### Set Chat ID in n8n
+
+1. Click the **Telegram Alert** node
+2. Find the **Chat ID** field
+3. Paste your Chat ID number (just the number, no quotes)
+4. Repeat for **Telegram Normal** node
+
+---
+
+## Testing the Workflow
+
+### Manual Test
+1. Click **"Execute Workflow"** (▶ button)
+2. Watch each node turn green as it executes
+3. Check your Telegram — you should receive a message within seconds
+
+### Verify Each Node
+Click each node after execution to inspect its output:
+
+- **Schedule Trigger** → Should show timestamp
+- **HTTP Request** → Should show BTC/ETH price data
+- **Code** → Should show calculated portfolio metrics
+- **If** → Should show which branch was taken
+- **Edit Fields** → Should show formatted `markdownReport`
+- **Telegram** → Should show `200 OK` response
+
+---
+
+## Activating the Schedule
+
+Once testing is successful:
+
+1. Click the **Active** toggle in the top right of the canvas
+2. The workflow will now run automatically every day at 9:00 AM
+3. You can change the schedule by clicking the **Schedule Trigger** node and modifying the cron expression
+
+### Common Cron Expressions
+
+| Schedule | Expression |
+|---|---|
+| Every day at 9 AM | `0 9 * * *` |
+| Every day at 8 AM and 6 PM | `0 8,18 * * *` |
+| Every hour | `0 * * * *` |
+| Every weekday at 9 AM | `0 9 * * 1-5` |
+
+---
+
+## Customizing the Portfolio
+
+Edit the **Code** node to match your actual holdings:
+
+```javascript
+// Your actual holdings
+const btcHolding = 0.5;   // Replace with your BTC amount
+const ethHolding = 3;     // Replace with your ETH amount
+
+// Alert threshold (default ±0.1% for testing, use ±2% for production)
+const alertStatus = (weightedChange > 2 || weightedChange < -2)
+  ? 'TRIGGERED' : 'NORMAL';
+```
+
+---
+
+## Troubleshooting
+
+| Problem | Solution |
+|---|---|
+| HTTP Request fails | Check internet connection; CoinGecko may be rate-limiting (wait 60s) |
+| Telegram not receiving messages | Verify Bot Token and Chat ID are correct; ensure you sent `/start` to the bot |
+| Workflow goes to FALSE branch always | Lower the threshold in the Code node for testing |
+| `getUpdates` returns empty `[]` | Send a message to your bot in Telegram first, then retry |
+| Node shows red error triangle | Click the node and check the error message in the OUTPUT panel |
