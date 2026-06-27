@@ -12,6 +12,9 @@
 | 🟢 NORMAL | Weighted 24h change within ±0.1% | Daily summary report |
 
 ---
+## 📸 Workflow Screenshot
+
+![n8n Workflow](workflow-screenshot.png)
 
 ## 🧠 What It Does
 
