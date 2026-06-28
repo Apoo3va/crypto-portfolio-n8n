@@ -218,4 +218,4 @@ Built as a portfolio project demonstrating **workflow automation**, **API integr
 
 ## 📄 License
 
-MIT License — free to use, modify, and distribute.
+MIT License : free to use, modify, and distribute.
